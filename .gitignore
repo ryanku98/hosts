@@ -2,6 +2,7 @@
 *.iml
 /myhosts
 /blacklist
+/whitelist
 /readmeData.json
 /hosts
 hosts-*
