@@ -1,2 +1,0 @@
-cd "..\..\Users\ryank\SCU Google Drive\GitHub\hosts"
-updateHostsWindows.bat
