@@ -3,6 +3,7 @@
 /myhosts
 /blacklist
 /whitelist
+/command_line.txt
 /readmeData.json
 /hosts
 hosts-*
