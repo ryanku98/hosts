@@ -18,13 +18,16 @@ os:
   - osx
 
 env:
-  - PYTHON_VERSION="2.7"
   - PYTHON_VERSION="3.5"
   - PYTHON_VERSION="3.6"
+  - PYTHON_VERSION="3.7"
 
 before_install:
   - export PATH="$HOME/miniconda3/bin:$PATH"
-  - chmod +x install_conda.sh
+  - chmod +x ci/install_conda.sh
+  - chmod +x ci/setup_conda_env.sh
+  - chmod +x ci/test.sh
+  - chmod +x ci/lint.sh
 
 install:
   - ci/install_conda.sh
