@@ -1,7 +1,6 @@
 .idea
 *.iml
 /myhosts
-/blacklist
 /whitelist
 /command_line.txt
 /readmeData.json
