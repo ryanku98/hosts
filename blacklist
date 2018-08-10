@@ -14,3 +14,10 @@
 # used by coinimp.com to load JS miner script (2018 August 09)
 # https://hostingcloud.science./n4Cq.js
 0.0.0.0 hostingcloud.science
+
+# JS miner
+0.0.0.0 moonify.io
+
+# used by moonify.io to load JS miner script (2018 August 09)
+0.0.0.0 pkg.moonify.io
+0.0.0.0 api.moonify.io
