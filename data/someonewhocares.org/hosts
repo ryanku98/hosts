@@ -8,7 +8,11 @@
 # Please forward any additions, corrections or comments by email to
 # hosts@someonewhocares.org
 
+<<<<<<< HEAD
 # Last updated: Fri, 10 Aug 2018 at 16:19:34 GMT
+=======
+# Last updated: Sat, 11 Aug 2018 at 20:02:06 GMT
+>>>>>>> upstream/master
 
 # Use this file to prevent your computer from connecting to selected
 # internet hosts. This is an easy and effective way to protect you from 
@@ -765,7 +769,6 @@ ff02::3		ip6-allhosts
 0.0.0.0 dkb01.webtrekk.net
 0.0.0.0 dotcomsecrets.com
 0.0.0.0 dpbolvw.net
-0.0.0.0 dpm.demdex.net
 0.0.0.0 dra.iesnare.com
 0.0.0.0 ds.247realmedia.com
 0.0.0.0 ds.amateurmatch.com
@@ -1064,7 +1067,6 @@ ff02::3		ip6-allhosts
 0.0.0.0 metrics.elle.com
 0.0.0.0 metrics.experts-exchange.com
 0.0.0.0 metrics.fandome.com
-0.0.0.0 metrics.foxnews.com
 0.0.0.0 metrics.gap.com
 0.0.0.0 metrics.health.com
 0.0.0.0 metrics.hrblock.com
