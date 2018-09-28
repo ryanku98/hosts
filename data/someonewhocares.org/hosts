@@ -8,7 +8,7 @@
 # Please forward any additions, corrections or comments by email to
 # hosts@someonewhocares.org
 
-# Last updated: Fri, 21 Sep 2018 at 02:19:30 GMT
+# Last updated: Thu, 27 Sep 2018 at 00:35:53 GMT
 
 # Use this file to prevent your computer from connecting to selected
 # internet hosts. This is an easy and effective way to protect you from 
@@ -998,6 +998,7 @@ ff02::3		ip6-allhosts
 #0.0.0.0 ll.a.hulu.com	# Uncomment to block Hulu.
 0.0.0.0 loadus.exelator.com
 0.0.0.0 loc1.hitsprocessor.com
+0.0.0.0 lockerdome.com
 0.0.0.0 log1.countomat.com
 0.0.0.0 log4.quintelligence.com
 0.0.0.0 log999.goo.ne.jp
@@ -2160,6 +2161,8 @@ ff02::3		ip6-allhosts
 0.0.0.0 a.webwise.net
 0.0.0.0 a.webwise.org
 0.0.0.0 azvjudwr.info
+0.0.0.0 badmactogoodmac.space
+0.0.0.0 badmactogoodmac.tech
 0.0.0.0 beloysoff.ru
 0.0.0.0 bestadbid.com
 0.0.0.0 bestreview.site
@@ -2867,7 +2870,9 @@ ff02::3		ip6-allhosts
 0.0.0.0 www1.realsoft34.com
 0.0.0.0 www.1tracksource.online
 0.0.0.0 www21.counsellor.gov.cn
+0.0.0.0 www2.anybestconcreteflash.icu
 0.0.0.0 www2.fasterupconcreteflash.icu
+0.0.0.0 www2.gettypegoldflash.club
 0.0.0.0 www.3tsdaq8viz.us
 0.0.0.0 www4.gy7k.net
 0.0.0.0 www.a2uu36g43l.download
@@ -2913,6 +2918,7 @@ ff02::3		ip6-allhosts
 0.0.0.0 www.flexibleadmin.com
 0.0.0.0 www.freecontent.bid
 0.0.0.0 www.freedailydownload.com
+0.0.0.0 www.frequencyscheduler.com
 0.0.0.0 www.froling.bee.pl
 0.0.0.0 www.gacatl.com
 0.0.0.0 www.gezinti.com
@@ -2930,6 +2936,7 @@ ff02::3		ip6-allhosts
 0.0.0.0 www.infopaypal.com
 0.0.0.0 www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com
 0.0.0.0 www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwff.com
+0.0.0.0 www.kbdiu5z8ah.us
 0.0.0.0 www.keybinary.com
 0.0.0.0 www.kinomarathon.ru
 0.0.0.0 www.kpremium.com
@@ -3014,6 +3021,8 @@ ff02::3		ip6-allhosts
 0.0.0.0 www.youcanoptout.net
 0.0.0.0 www.youcanoptout.org
 0.0.0.0 www.youfiletor.com
+0.0.0.0 www.zfn5wua2d1.online
+0.0.0.0 www.zoominnovate.online
 0.0.0.0 xbasfbno.info
 0.0.0.0 xfotosx01.fromru.su
 0.0.0.0 xponlinescanner.com

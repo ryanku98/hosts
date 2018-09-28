@@ -1,0 +1,23 @@
+# blacklist
+#
+# The contents of this file (containing a listing of additional domains in
+# 'hosts' file format) are appended to the unified hosts file during the
+# update process. For example, uncomment the following line to block
+# 'example.com':
+
+# 0.0.0.0 example.com
+
+# used by crypto-loot.com to load JS miner script (2018 August 09)
+# //verifier.live/lib/crypta.js
+0.0.0.0 verifier.live
+
+# used by coinimp.com to load JS miner script (2018 August 09)
+# https://hostingcloud.science./n4Cq.js
+0.0.0.0 hostingcloud.science
+
+# JS miner
+0.0.0.0 moonify.io
+
+# used by moonify.io to load JS miner script (2018 August 09)
+0.0.0.0 pkg.moonify.io
+0.0.0.0 api.moonify.io
