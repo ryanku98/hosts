@@ -13,9 +13,11 @@ import shutil
 import sys
 import tempfile
 import unittest
+import unittest.mock as mock
+from io import BytesIO, StringIO
 
 import updateHostsFile
-from updateHostsFile import (PY3, Colors, colorize, display_exclusion_options,
+from updateHostsFile import (Colors, colorize, display_exclusion_options,
                              domain_to_idna, exclude_domain, flush_dns_cache,
                              gather_custom_exclusions, get_defaults,
                              get_file_by_url, is_valid_domain_format,
@@ -29,14 +31,7 @@ from updateHostsFile import (PY3, Colors, colorize, display_exclusion_options,
                              update_sources_data, write_data,
                              write_opening_header)
 
-if PY3:
-    from io import BytesIO, StringIO
-    import unittest.mock as mock
-    unicode = str
-else:
-    from StringIO import StringIO
-    BytesIO = StringIO
-    import mock
+unicode = str
 
 
 # Test Helper Objects
@@ -48,13 +43,10 @@ class Base(unittest.TestCase):
 
     @property
     def sep(self):
-        return "\\" if sys.platform == "win32" else "/"
+        return os.sep
 
     def assert_called_once(self, mock_method):
-        if PY3 and sys.version_info < (3, 6):
-            self.assertEqual(mock_method.call_count, 1)
-        else:
-            mock_method.assert_called_once()
+        self.assertEqual(mock_method.call_count, 1)
 
 
 class BaseStdout(Base):
@@ -78,13 +70,6 @@ class BaseMockDir(Base):
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
-
-
-def builtins():
-    if PY3:
-        return "builtins"
-    else:
-        return "__builtin__"
 # End Test Helper Objects
 
 
@@ -101,7 +86,7 @@ class TestGetDefaults(Base):
                         "replace": False,
                         "backup": False,
                         "skipstatichosts": False,
-                        "keepdomaincomments": False,
+                        "keepdomaincomments": True,
                         "extensionspath": "foo" + self.sep + "extensions",
                         "extensions": [],
                         "compress": False,
@@ -117,7 +102,7 @@ class TestGetDefaults(Base):
                         "readmedata": {},
                         "readmedatafilename": ("foo" + self.sep +
                                                "readmeData.json"),
-                        "exclusionpattern": "([a-zA-Z\d-]+\.){0,}",
+                        "exclusionpattern": r"([a-zA-Z\d-]+\.){0,}",
                         "exclusionregexs": [],
                         "exclusions": [],
                         "commonexclusions": ["hulu.com"],
@@ -179,7 +164,7 @@ class TestPromptForUpdate(BaseStdout, BaseMockDir):
                 contents = f.read()
                 self.assertEqual(contents, "")
 
-    @mock.patch(builtins() + ".open")
+    @mock.patch("builtins.open")
     def test_no_freshen_fail_new_file(self, mock_open):
         for exc in (IOError, OSError):
             mock_open.side_effect = exc("failed open")
@@ -255,7 +240,6 @@ class TestPromptForUpdate(BaseStdout, BaseMockDir):
 
     def tearDown(self):
         BaseStdout.tearDown(self)
-        # BaseStdout.tearDown(self)
 
 
 class TestPromptForExclusions(BaseStdout):
@@ -467,7 +451,7 @@ class TestGatherCustomExclusions(BaseStdout):
 
     # Can only test in the invalid domain case
     # because of the settings global variable.
-    @mock.patch("updateHostsFile.raw_input", side_effect=["foo", "no"])
+    @mock.patch("updateHostsFile.input", side_effect=["foo", "no"])
     @mock.patch("updateHostsFile.is_valid_domain_format", return_value=False)
     def test_basic(self, *_):
         gather_custom_exclusions("foo", [])
@@ -476,8 +460,7 @@ class TestGatherCustomExclusions(BaseStdout):
         output = sys.stdout.getvalue()
         self.assertIn(expected, output)
 
-    @mock.patch("updateHostsFile.raw_input", side_effect=["foo", "yes",
-                                                          "bar", "no"])
+    @mock.patch("updateHostsFile.input", side_effect=["foo", "yes", "bar", "no"])
     @mock.patch("updateHostsFile.is_valid_domain_format", return_value=False)
     def test_multiple(self, *_):
         gather_custom_exclusions("foo", [])
@@ -504,7 +487,7 @@ class TestExcludeDomain(Base):
         exp_count = 0
         expected_regexes = []
         exclusion_regexes = []
-        exclusion_pattern = "[a-z]\."
+        exclusion_pattern = r"[a-z]\."
 
         for domain in ["google.com", "hulu.com", "adaway.org"]:
             self.assertEqual(len(exclusion_regexes), exp_count)
@@ -530,7 +513,7 @@ class TestMatchesExclusions(Base):
             self.assertFalse(matches_exclusions(domain, exclusion_regexes))
 
     def test_no_match_list(self):
-        exclusion_regexes = [".*\.org", ".*\.edu"]
+        exclusion_regexes = [r".*\.org", r".*\.edu"]
         exclusion_regexes = [re.compile(regex) for regex in exclusion_regexes]
 
         for domain in ["1.2.3.4 localhost", "5.6.7.8 hulu.com",
@@ -538,7 +521,7 @@ class TestMatchesExclusions(Base):
             self.assertFalse(matches_exclusions(domain, exclusion_regexes))
 
     def test_match_list(self):
-        exclusion_regexes = [".*\.com", ".*\.org", ".*\.edu"]
+        exclusion_regexes = [r".*\.com", r".*\.org", r".*\.edu"]
         exclusion_regexes = [re.compile(regex) for regex in exclusion_regexes]
 
         for domain in ["5.6.7.8 hulu.com", "9.1.2.3 yahoo.com",
@@ -567,7 +550,7 @@ class TestUpdateSourcesData(Base):
 
     @mock.patch("updateHostsFile.recursive_glob", return_value=[])
     @mock.patch("updateHostsFile.path_join_robust", return_value="dirpath")
-    @mock.patch(builtins() + ".open", return_value=mock.Mock())
+    @mock.patch("builtins.open", return_value=mock.Mock())
     def test_no_update(self, mock_open, mock_join_robust, _):
         extensions = []
         sources_data = [{"source": "source1.txt"}, {"source": "source2.txt"}]
@@ -589,7 +572,7 @@ class TestUpdateSourcesData(Base):
     @mock.patch("updateHostsFile.recursive_glob",
                 side_effect=[[], ["update1.txt", "update2.txt"]])
     @mock.patch("json.load", return_value={"mock_source": "mock_source.ext"})
-    @mock.patch(builtins() + ".open", return_value=mock.Mock())
+    @mock.patch("builtins.open", return_value=mock.Mock())
     @mock.patch("updateHostsFile.path_join_robust", return_value="dirpath")
     def test_update_only_extensions(self, mock_join_robust, *_):
         extensions = [".json"]
@@ -607,7 +590,7 @@ class TestUpdateSourcesData(Base):
                                           {"mock_source": "mock_source2.txt"},
                                           {"mock_source": "mock_source3.txt"},
                                           {"mock_source": "mock_source4.txt"}])
-    @mock.patch(builtins() + ".open", return_value=mock.Mock())
+    @mock.patch("builtins.open", return_value=mock.Mock())
     @mock.patch("updateHostsFile.path_join_robust", return_value="dirpath")
     def test_update_both_pathways(self, mock_join_robust, *_):
         extensions = [".json"]
@@ -630,13 +613,13 @@ class TestUpdateAllSources(BaseStdout):
         self.source_data_filename = "data.json"
         self.host_filename = "hosts.txt"
 
-    @mock.patch(builtins() + ".open")
+    @mock.patch("builtins.open")
     @mock.patch("updateHostsFile.recursive_glob", return_value=[])
     def test_no_sources(self, _, mock_open):
         update_all_sources(self.source_data_filename, self.host_filename)
         mock_open.assert_not_called()
 
-    @mock.patch(builtins() + ".open", return_value=mock.Mock())
+    @mock.patch("builtins.open", return_value=mock.Mock())
     @mock.patch("json.load", return_value={"url": "example.com"})
     @mock.patch("updateHostsFile.recursive_glob", return_value=["foo"])
     @mock.patch("updateHostsFile.write_data", return_value=0)
@@ -651,7 +634,7 @@ class TestUpdateAllSources(BaseStdout):
 
         self.assertIn(expected, output)
 
-    @mock.patch(builtins() + ".open", return_value=mock.Mock())
+    @mock.patch("builtins.open", return_value=mock.Mock())
     @mock.patch("json.load", return_value={"url": "example.com"})
     @mock.patch("updateHostsFile.recursive_glob", return_value=["foo"])
     @mock.patch("updateHostsFile.write_data", return_value=0)
@@ -668,7 +651,7 @@ class TestUpdateAllSources(BaseStdout):
         for expected in expecteds:
             self.assertIn(expected, output)
 
-    @mock.patch(builtins() + ".open", return_value=mock.Mock())
+    @mock.patch("builtins.open", return_value=mock.Mock())
     @mock.patch("json.load", side_effect=[{"url": "example.com"},
                                           {"url": "example2.com"}])
     @mock.patch("updateHostsFile.recursive_glob", return_value=["foo", "bar"])
@@ -770,10 +753,12 @@ class TestStripRule(Base):
             self.assertEqual(output, line)
 
     def test_strip_more_than_two(self):
+        comment = " # comments here galore"
+
         for line in ["0.0.0.0 twitter.com", "127.0.0.1 facebook.com",
                      "8.8.8.8 google.com", "1.2.3.4 foo.bar.edu"]:
-            output = strip_rule(line + " # comments here galore")
-            self.assertEqual(output, line)
+            output = strip_rule(line + comment)
+            self.assertEqual(output, line + comment)
 
 
 class TestWriteOpeningHeader(BaseMockDir):
@@ -917,44 +902,10 @@ class TestWriteOpeningHeader(BaseMockDir):
         ):
             self.assertNotIn(expected, contents)
 
-    def test_no_preamble(self):
-        # We should not even attempt to read this, as it is a directory.
-        hosts_dir = os.path.join(self.test_dir, "myhosts")
-        os.mkdir(hosts_dir)
-
-        kwargs = dict(extensions="", outputsubfolder="",
-                      numberofrules=5, skipstatichosts=True)
-
-        with self.mock_property("updateHostsFile.BASEDIR_PATH"):
-            updateHostsFile.BASEDIR_PATH = self.test_dir
-            write_opening_header(self.final_file, **kwargs)
-
-        contents = self.final_file.getvalue()
-        contents = contents.decode("UTF-8")
-
-        # Expected contents.
-        for expected in (
-            "# This hosts file is a merged collection",
-            "# with a dash of crowd sourcing via Github",
-            "# Number of unique domains: {count}".format(
-                count=kwargs["numberofrules"]),
-            "Fetch the latest version of this file:",
-            "Project home page: https://github.com/StevenBlack/hosts",
-        ):
-            self.assertIn(expected, contents)
-
-        # Expected non-contents.
-        for expected in (
-            "# Extensions added to this file:",
-            "127.0.0.1 localhost",
-            "127.0.0.1 local",
-            "127.0.0.53",
-            "127.0.1.1",
-        ):
-            self.assertNotIn(expected, contents)
-
-    def test_preamble(self):
+    def _check_preamble(self, check_copy):
         hosts_file = os.path.join(self.test_dir, "myhosts")
+        hosts_file += ".example" if check_copy else ""
+
         with open(hosts_file, "w") as f:
             f.write("peter-piper-picked-a-pepper")
 
@@ -989,6 +940,12 @@ class TestWriteOpeningHeader(BaseMockDir):
             "127.0.1.1",
         ):
             self.assertNotIn(expected, contents)
+
+    def test_preamble_exists(self):
+        self._check_preamble(True)
+
+    def test_preamble_copy(self):
+        self._check_preamble(False)
 
     def tearDown(self):
         super(TestWriteOpeningHeader, self).tearDown()
@@ -1100,7 +1057,7 @@ class TestMoveHostsFile(BaseStdout):
             expected = ("Automatically moving the hosts "
                         "file in place is not yet supported.\n"
                         "Please move the generated file to "
-                        "%SystemRoot%\system32\drivers\etc\hosts")
+                        r"%SystemRoot%\system32\drivers\etc\hosts")
             output = sys.stdout.getvalue()
             self.assertIn(expected, output)
 
@@ -1600,7 +1557,7 @@ class TestQueryYesOrNo(BaseStdout):
         for invalid_default in ["foo", "bar", "baz", 1, 2, 3]:
             self.assertRaises(ValueError, query_yes_no, "?", invalid_default)
 
-    @mock.patch("updateHostsFile.raw_input", side_effect=["yes"] * 3)
+    @mock.patch("updateHostsFile.input", side_effect=["yes"] * 3)
     def test_valid_default(self, _):
         for valid_default, expected in [(None, "[y/n]"), ("yes", "[Y/n]"),
                                         ("no", "[y/N]")]:
@@ -1611,7 +1568,7 @@ class TestQueryYesOrNo(BaseStdout):
 
             self.assertIn(expected, output)
 
-    @mock.patch("updateHostsFile.raw_input", side_effect=([""] * 2))
+    @mock.patch("updateHostsFile.input", side_effect=([""] * 2))
     def test_use_valid_default(self, _):
         for valid_default in ["yes", "no"]:
             expected = (valid_default == "yes")
@@ -1619,19 +1576,15 @@ class TestQueryYesOrNo(BaseStdout):
 
             self.assertEqual(actual, expected)
 
-    @mock.patch("updateHostsFile.raw_input", side_effect=["no", "NO", "N",
-                                                          "n", "No", "nO"])
+    @mock.patch("updateHostsFile.input", side_effect=["no", "NO", "N", "n", "No", "nO"])
     def test_valid_no(self, _):
         self.assertFalse(query_yes_no("?", None))
 
-    @mock.patch("updateHostsFile.raw_input", side_effect=["yes", "YES", "Y",
-                                                          "yeS", "y", "YeS",
-                                                          "yES", "YEs"])
+    @mock.patch("updateHostsFile.input", side_effect=["yes", "YES", "Y", "yeS", "y", "YeS", "yES", "YEs"])
     def test_valid_yes(self, _):
         self.assertTrue(query_yes_no("?", None))
 
-    @mock.patch("updateHostsFile.raw_input", side_effect=["foo", "yes",
-                                                          "foo", "no"])
+    @mock.patch("updateHostsFile.input", side_effect=["foo", "yes", "foo", "no"])
     def test_invalid_then_valid(self, _):
         expected = "Please respond with 'yes' or 'no'"
 

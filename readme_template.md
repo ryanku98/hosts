@@ -1,7 +1,5 @@
 ----
-**Take Note!**  We are in the process of [dropping support for Python 2.7](https://github.com/StevenBlack/hosts/issues/729).
-
-Soon, to self-generate hosts files, you'll need to use Python 3.
+**Take Note!**  This version of the Hosts file generator, and tests, are for Python 3.5+ only.
 
 ----
 
@@ -63,35 +61,28 @@ Data for extensions is stored in the [`extensions`](https://github.com/StevenBla
 
 ## Generate your own unified hosts file
 
-**Note** if you are using Python 3, please install the dependencies with:
+To generate your own unified hosts file you will need Python 3.7 or later.
+
+First install the dependencies with:
 
     pip3 install --user -r requirements.txt
-
-**Note** if you are using Python 2, please install the dependencies with:
-
-    pip2 install --user -r requirements_python2.txt
 
 **Note** we recommend the `--user` flag which installs the required dependencies at the user level. More information about it can be found on pip [documentation](https://pip.pypa.io/en/stable/reference/pip_install/?highlight=--user#cmdoption-user).
 
 To run unit tests, in the top level directory, just run:
 
-    python testUpdateHostsFile.py
+    python3 testUpdateHostsFile.py
 
-The `updateHostsFile.py` script, which is Python 2.7 and Python 3-compatible,
-will generate a unified hosts file based on the sources in the local `data/`
-subfolder.  The script will prompt you whether it should fetch updated
-versions (from locations defined by the `update.json` text file in each
-source's folder). Otherwise, it will use the `hosts` file that's already there.
+The `updateHostsFile.py` script will generate a unified hosts file based on the sources in the 
+local `data/` subfolder.  The script will prompt you whether it should fetch updated versions 
+(from locations defined by the `update.json` text file in each source's folder). Otherwise, it 
+will use the `hosts` file that's already there.
 
 ### Usage
 
 #### Using Python 3:
 
     python3 updateHostsFile.py [--auto] [--replace] [--ip nnn.nnn.nnn.nnn] [--extensions ext1 ext2 ext3]
-
-#### Using Python 2.7:
-
-    python updateHostsFile.py [--auto] [--replace] [--ip nnn.nnn.nnn.nnn] [--extensions ext1 ext2 ext3]
 
 #### Command line options:
 
@@ -119,9 +110,8 @@ Only active when `--replace` is also active.
 `--ip nnn.nnn.nnn.nnn`, or `-i nnn.nnn.nnn.nnn`: the IP address to use as the
 target.  Default is `0.0.0.0`.
 
-`--keepdomaincomments`, or `-k`: `false` (default) or `true`, keep the comments
-that appear on the same line as domains.  The default is `false` since some
-router-based implementations can't handle comments in-line with hosts.
+`--keepdomaincomments`, or `-k`: `true` (default) or `false`, keep the comments
+that appear on the same line as domains.  The default is `true`.
 
 `--noupdate`, or `-n`: skip fetching updates from hosts data sources.
 
@@ -197,7 +187,7 @@ Fork this hosts this repo and add your links to [https://github.com/StevenBlack/
 
 Then, submit a pull request.
 
-**WARNING**: this is less desireable than Option 1 because the ongoing curation falls on us and what you've just done is created more work for us.
+**WARNING**: this is less desirable than Option 1 because the ongoing curation falls on us and what you've just done is created more work for us.
 
 ### Option 3: create your own hosts list as a repo on Github
 
@@ -309,7 +299,7 @@ sc stop "Dnscache"
 
 Open a Terminal and run with root privileges:
 
-**Debian/Ubuntu** `sudo /etc/rc.d/init.d/nscd restart`
+**Debian/Ubuntu** `sudo service network-manager restart`
 
 **Linux Mint** `sudo /etc/init.d/dns-clean start`
 

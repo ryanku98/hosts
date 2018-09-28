@@ -1,12 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Script by Ben Limmer
 # https://github.com/l1m5
 #
 # This Python script will combine all the host files you provide
 # as sources into one, unique host file to keep you internet browsing happy.
-
-from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 import argparse
 import fnmatch
@@ -31,10 +29,8 @@ PY3 = sys.version_info >= (3, 0)
 
 if PY3:
     from urllib.request import urlopen
-    raw_input = input
-else:  # Python 2
-    from urllib2 import urlopen
-    raw_input = raw_input  # noqa
+else:
+    raise Exception('We do not support Python 2 anymore.')
 
 # Syntactic sugar for "sudo" command in UNIX / Linux
 if platform.system() == "OpenBSD":
@@ -64,7 +60,7 @@ def get_defaults():
         "replace": False,
         "backup": False,
         "skipstatichosts": False,
-        "keepdomaincomments": False,
+        "keepdomaincomments": True,
         "extensionspath": path_join_robust(BASEDIR_PATH, "extensions"),
         "extensions": [],
         "compress": False,
@@ -78,7 +74,7 @@ def get_defaults():
         "readmetemplate": path_join_robust(BASEDIR_PATH, "readme_template.md"),
         "readmedata": {},
         "readmedatafilename": path_join_robust(BASEDIR_PATH, "readmeData.json"),
-        "exclusionpattern": "([a-zA-Z\d-]+\.){0,}",
+        "exclusionpattern": r"([a-zA-Z\d-]+\.){0,}",
         "exclusionregexs": [],
         "exclusions": [],
         "commonexclusions": ["hulu.com"],
@@ -103,8 +99,8 @@ def main():
     parser.add_argument("--ip", "-i", dest="targetip", default="0.0.0.0",
                         help="Target IP address. Default is 0.0.0.0.")
     parser.add_argument("--keepdomaincomments", "-k",
-                        dest="keepdomaincomments", default=False,
-                        help="Keep domain line comments.")
+                        dest="keepdomaincomments", action="store_false", default=True,
+                        help="Do not keep domain line comments.")
     parser.add_argument("--noupdate", "-n", dest="noupdate", default=False,
                         action="store_true", help="Don't update from "
                                                   "host data sources.")
@@ -187,13 +183,12 @@ def main():
     merge_file = create_initial_file()
     remove_old_hosts_file(settings["backup"])
     if settings["compress"]:
-        # Another mode is required to read and write the file in Python 3
-        final_file = open(path_join_robust(settings["outputpath"], "hosts"), "w+b" if PY3 else "w+")
+        final_file = open(path_join_robust(settings["outputpath"], "hosts"), "w+b")
         compressed_file = tempfile.NamedTemporaryFile()
         remove_dups_and_excl(merge_file, exclusion_regexes, compressed_file)
         compress_file(compressed_file, settings["targetip"], final_file)
     elif settings["minimise"]:
-        final_file = open(path_join_robust(settings["outputpath"], "hosts"), "w+b" if PY3 else "w+")
+        final_file = open(path_join_robust(settings["outputpath"], "hosts"), "w+b")
         minimised_file = tempfile.NamedTemporaryFile()
         remove_dups_and_excl(merge_file, exclusion_regexes, minimised_file)
         minimise_file(minimised_file, settings["targetip"], final_file)
@@ -359,7 +354,7 @@ def prompt_for_move(final_file, **move_params):
     elif move_params["auto"] or skip_static_hosts:
         move_file = False
     else:
-        prompt = ("Do you want to replace your existing hosts file with the newly generated file?")
+        prompt = "Do you want to replace your existing hosts file with the newly generated file?"
         move_file = query_yes_no(prompt)
 
     if move_file:
@@ -433,8 +428,8 @@ def gather_custom_exclusions(exclusion_pattern, exclusion_regexes):
     # We continue running this while-loop until the user
     # says that they have no more domains to exclude.
     while True:
-        domain_prompt = ("Enter the domain you want to exclude (e.g. facebook.com): ")
-        user_domain = raw_input(domain_prompt)
+        domain_prompt = "Enter the domain you want to exclude (e.g. facebook.com): "
+        user_domain = input(domain_prompt)
 
         if is_valid_domain_format(user_domain):
             exclusion_regexes = exclude_domain(user_domain, exclusion_pattern, exclusion_regexes)
@@ -633,8 +628,8 @@ def create_initial_file():
     for source in recursive_glob(settings["datapath"],
                                  settings["hostfilename"]):
 
-        start = "# Start {}\n".format(os.path.basename(os.path.dirname(source)))
-        end = "# End {}\n".format(os.path.basename(os.path.dirname(source)))
+        start = "# Start {}\n\n".format(os.path.basename(os.path.dirname(source)))
+        end = "# End {}\n\n".format(os.path.basename(os.path.dirname(source)))
 
         with open(source, "r") as curFile:
             write_data(merge_file, start + curFile.read() + end)
@@ -645,6 +640,8 @@ def create_initial_file():
                 settings["extensionspath"], source), settings["hostfilename"]):
             with open(filename, "r") as curFile:
                 write_data(merge_file, curFile.read())
+
+    maybe_copy_example_file(settings["blacklistfile"])
 
     if os.path.isfile(settings["blacklistfile"]):
         with open(settings["blacklistfile"], "r") as curFile:
@@ -744,6 +741,8 @@ def remove_dups_and_excl(merge_file, exclusion_regexes, output_file=None):
     """
 
     number_of_rules = settings["numberofrules"]
+    maybe_copy_example_file(settings["whitelistfile"])
+
     if os.path.isfile(settings["whitelistfile"]):
         with open(settings["whitelistfile"], "r") as ins:
             for line in ins:
@@ -755,8 +754,7 @@ def remove_dups_and_excl(merge_file, exclusion_regexes, output_file=None):
         os.makedirs(settings["outputpath"])
 
     if output_file is None:
-        # Another mode is required to read and write the file in Python 3
-        final_file = open(path_join_robust(settings["outputpath"], "hosts"), "w+b" if PY3 else "w+")
+        final_file = open(path_join_robust(settings["outputpath"], "hosts"), "w+b")
     else:
         final_file = output_file
 
@@ -774,7 +772,7 @@ def remove_dups_and_excl(merge_file, exclusion_regexes, output_file=None):
         line = line.replace("\t+", " ")
 
         # see gh-271: trim trailing whitespace, periods
-        line = line.rstrip(' .') + "\n"
+        line = line.rstrip(' .')
 
         # Testing the first character doesn't require startswith
         if line[0] == "#" or re.match(r'^\s*$', line[0]):
@@ -794,7 +792,7 @@ def remove_dups_and_excl(merge_file, exclusion_regexes, output_file=None):
             keep_domain_comments=settings["keepdomaincomments"])
 
         for exclude in exclusions:
-            if re.search('[\s\.]' + re.escape(exclude) + '\s', line):
+            if re.search(r'[\s\.]' + re.escape(exclude) + r'\s', line):
                 write_line = False
                 break
 
@@ -845,7 +843,10 @@ def normalize_rule(rule, target_ip, keep_domain_comments):
         rule = "%s %s" % (target_ip, hostname)
 
         if suffix and keep_domain_comments:
-            rule += " #%s" % suffix
+            if not suffix.strip().startswith('#'):
+                rule += " #%s" % suffix
+            else:
+                rule += " %s" % suffix
 
         return hostname, rule + "\n"
 
@@ -862,7 +863,10 @@ def normalize_rule(rule, target_ip, keep_domain_comments):
         rule = "%s %s" % (target_ip, ip_host)
 
         if suffix and keep_domain_comments:
-            rule += " #%s" % suffix
+            if not suffix.strip().startswith('#'):
+                rule += " #%s" % suffix
+            else:
+                rule += " %s" % suffix
 
         return ip_host, rule + "\n"
 
@@ -876,9 +880,6 @@ def normalize_rule(rule, target_ip, keep_domain_comments):
 def strip_rule(line):
     """
     Sanitize a rule string provided before writing it to the output hosts file.
-
-    Some sources put comments around their rules, for accuracy we need
-    to strip them the comments are preserved in the output hosts file.
 
     Parameters
     ----------
@@ -896,7 +897,7 @@ def strip_rule(line):
         # just return blank
         return ""
     else:
-        return split_line[0] + " " + split_line[1]
+        return " ".join(split_line)
 
 
 def write_opening_header(final_file, **header_params):
@@ -962,6 +963,7 @@ def write_opening_header(final_file, **header_params):
         write_data(final_file, "\n")
 
     preamble = path_join_robust(BASEDIR_PATH, "myhosts")
+    maybe_copy_example_file(preamble)
 
     if os.path.isfile(preamble):
         with open(preamble, "r") as f:
@@ -1022,7 +1024,7 @@ def move_hosts_file_into_place(final_file):
     ----------
     final_file : file object
         The newly-created hosts file to move.
-    """
+    """  # noqa: W605
 
     filename = os.path.abspath(final_file.name)
 
@@ -1032,7 +1034,7 @@ def move_hosts_file_into_place(final_file):
             print_failure("Moving the file failed.")
     elif os.name == "nt":
         print("Automatically moving the hosts file in place is not yet supported.")
-        print("Please move the generated file to %SystemRoot%\system32\drivers\etc\hosts")
+        print("Please move the generated file to %SystemRoot%\system32\drivers\etc\hosts")  # noqa: W605
 
 
 def flush_dns_cache():
@@ -1219,6 +1221,26 @@ def domain_to_idna(line):
 
 
 # Helper Functions
+def maybe_copy_example_file(file_path):
+    """
+    Given a file path, copy over its ".example" if the path doesn't exist.
+
+    If the path does exist, nothing happens in this function.
+
+    If the path doesn't exist, and the ".example" file doesn't exist, nothing happens in this function.
+
+    Parameters
+    ----------
+    file_path : str
+        The full file path to check.
+    """
+
+    if not os.path.isfile(file_path):
+        example_file_path = file_path + ".example"
+        if os.path.isfile(example_file_path):
+            shutil.copyfile(example_file_path, file_path)
+
+
 def get_file_by_url(url):
     """
     Get a file data located at a particular URL.
@@ -1250,7 +1272,7 @@ def get_file_by_url(url):
 
 def write_data(f, data):
     """
-    Write data to a file object. This is a cross-Python implementation.
+    Write data to a file object.
 
     Parameters
     ----------
@@ -1260,13 +1282,7 @@ def write_data(f, data):
         The data to write to the file.
     """
 
-    if PY3:
-        f.write(bytes(data, "UTF-8"))
-    else:
-        try:
-            f.write(str(data))
-        except UnicodeEncodeError:
-            f.write(str(data.encode("UTF-8")))
+    f.write(bytes(data, "UTF-8"))
 
 
 def list_dir_no_hidden(path):
@@ -1284,7 +1300,7 @@ def list_dir_no_hidden(path):
 
 def query_yes_no(question, default="yes"):
     """
-    Ask a yes/no question via raw_input() and get answer from the user.
+    Ask a yes/no question via input() and get answer from the user.
 
     Inspired by the following implementation:
 
@@ -1317,7 +1333,7 @@ def query_yes_no(question, default="yes"):
     while not reply:
         sys.stdout.write(colorize(question, Colors.PROMPT) + prompt)
 
-        choice = raw_input().lower()
+        choice = input().lower()
         reply = None
 
         if default and not choice:
@@ -1349,7 +1365,7 @@ def is_valid_domain_format(domain):
         print("You didn't enter a domain. Try again.")
         return False
 
-    domain_regex = re.compile("www\d{0,3}[.]|https?")
+    domain_regex = re.compile(r"www\d{0,3}[.]|https?")
 
     if domain_regex.match(domain):
         print("The domain " + domain + " is not valid. Do not include "
@@ -1362,10 +1378,6 @@ def is_valid_domain_format(domain):
 def recursive_glob(stem, file_pattern):
     """
     Recursively match files in a directory according to a pattern.
-
-    This function is a version-independent of Python 3.x's function:
-
-    glob( ... "/**/" ... )
 
     Parameters
     ----------

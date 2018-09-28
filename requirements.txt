@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 lxml==4.2.3
 beautifulsoup4==4.6.0
 mock==2.0.0
+=======
+lxml>=4.2.4
+beautifulsoup4==4.6.1
+>>>>>>> upstream/master
