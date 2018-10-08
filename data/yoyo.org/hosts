@@ -3,17 +3,20 @@
 # For more information about this list, see: https://pgl.yoyo.org/adservers/
 # ----
 # last updated:   Fri, 31 Aug 2018 16:35:56 GMT
-# entries:        2628
+# entries:        2626
 # format:         hosts (hosts -- in hosts file format)
 # credits:        Peter Lowe - pgl@yoyo.org - https://pgl.yoyo.org/ - https://twitter.com/pgl
 # this URL:       https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&mimetype=plaintext&useip=0.0.0.0
 # other formats:  https://pgl.yoyo.org/adservers/formats.php
 # policy:         https://pgl.yoyo.org/adservers/policy.php
 #
+<<<<<<< HEAD
 # start date:    Sat, 03 Oct 1998 00:00:00
+=======
+# start date:    Sat, 10 Oct 1998 00:00:00
+>>>>>>> upstream/master
 0.0.0.0 101com.com
 0.0.0.0 101order.com
-0.0.0.0 123found.com
 0.0.0.0 123freeavatars.com
 0.0.0.0 180hits.de
 0.0.0.0 180searchassistant.com
@@ -132,7 +135,6 @@
 0.0.0.0 ad.nozonedata.com
 0.0.0.0 ad.nttnavi.co.jp
 0.0.0.0 ad.nwt.cz
-0.0.0.0 ad.onad.eu
 0.0.0.0 ad.pandora.tv
 0.0.0.0 ad.period-calendar.com
 0.0.0.0 ad.preferances.com
@@ -1182,6 +1184,7 @@
 0.0.0.0 cjlog.com
 0.0.0.0 claria.com
 0.0.0.0 class-act-clicks.com
+0.0.0.0 click.absoluteagency.com
 0.0.0.0 click.fool.com
 0.0.0.0 click.kmindex.ru
 0.0.0.0 click2freemoney.com
@@ -2039,6 +2042,7 @@
 0.0.0.0 primetime.net
 0.0.0.0 privatecash.com
 0.0.0.0 prmtracking.com
+0.0.0.0 pro-advertising.com
 0.0.0.0 proext.com
 0.0.0.0 profero.com
 0.0.0.0 profitrumour.com
@@ -2268,7 +2272,6 @@
 0.0.0.0 sponsors.thoughtsmedia.com
 0.0.0.0 spot.fitness.com
 0.0.0.0 spotxchange.com
-0.0.0.0 spykemediatrack.co
 0.0.0.0 spykemediatrack.com
 0.0.0.0 spylog.com
 0.0.0.0 spywarelabs.com
@@ -2389,7 +2392,6 @@
 0.0.0.0 top.proext.com
 0.0.0.0 top100-images.rambler.ru
 0.0.0.0 top100.mafia.ru
-0.0.0.0 top123.ro
 0.0.0.0 top20free.com
 0.0.0.0 top90.ro
 0.0.0.0 topacity.info
