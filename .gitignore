@@ -1,9 +1,10 @@
 .idea
 *.iml
-/myhosts
-/whitelist
+myhosts
+blacklist
+whitelist
+readmeData.json
 /command_line.txt
-/readmeData.json
 /hosts
 hosts-*
 /web.config
