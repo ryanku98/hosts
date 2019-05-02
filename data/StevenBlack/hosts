@@ -84,7 +84,6 @@
 0.0.0.0 www.urldelivery.com
 0.0.0.0 files.ctnet4.space
 0.0.0.0 apps3.cointraffic.io
-0.0.0.0 cfvod.kaltura.com
 0.0.0.0 metrics.brightcove.com
 0.0.0.0 ping.chartbeat.net
 0.0.0.0 www.tvpassport.com
@@ -92,7 +91,6 @@
 0.0.0.0 www.googletagmanager.com
 0.0.0.0 postmediamontrealgazette2.files.wordpress.com
 0.0.0.0 ping.chartbeat.net
-0.0.0.0 cdnapi.kaltura.com
 0.0.0.0 tvmds.tvpassport.com
 0.0.0.0 stats.wp.com
 0.0.0.0 4436230.fls.doubleclick.net
@@ -268,8 +266,6 @@
 0.0.0.0 smetrics.bestbuy.com
 0.0.0.0 srv.pixel.parsely.com
 0.0.0.0 sdkupgrade.insight.ucweb.com
-0.0.0.0 vrl.m.conviva.com
-0.0.0.0 zee.cws.conviva.com
 0.0.0.0 uop.umeng.com
 0.0.0.0 wc-tracking.lavasoft.com
 0.0.0.0 api.cloudmobi.net
@@ -387,7 +383,6 @@
 0.0.0.0 metrics.adage.com
 0.0.0.0 ads.feedly.com
 0.0.0.0 bi-collector.oneapm.com
-0.0.0.0 lepodownload.mediatek.com
 0.0.0.0 pixel.realclever.com
 0.0.0.0 sdktm.w.inmobi.com
 0.0.0.0 matchmyip.com
@@ -690,6 +685,8 @@
 0.0.0.0 nexusrules.officeapps.live.com
 # Telemetry and Reporting Service for Office apps
 0.0.0.0 telemetry.firstpartyapps.oaspapps.com
+# Telemetry Reporting
+0.0.0.0 browser.pipe.aria.microsoft.com
 
 # Spam domains
 # If your software is able, the below domains and all subdomains should be blocked
@@ -699,10 +696,11 @@
 #*.weconfirmyou.com
 0.0.0.0 cws.conviva.com
 #*.cws.conviva.com
+0.0.0.0 vrl.m.conviva.com
+0.0.0.0 zee.cws.conviva.com
 
 # These stink-up yahoo finance
 0.0.0.0 beap-bc.yahoo.com
-0.0.0.0 secure.footprint.net
 0.0.0.0 token.rubiconproject.com
 0.0.0.0 fc.yahoo.com
 0.0.0.0 pr-bh.ybp.yahoo.com
@@ -949,7 +947,7 @@
 0.0.0.0 best2017games.com
 0.0.0.0 www.bet365.com
 
-# Massive logout sites 
+# Massive logout sites
 0.0.0.0 theannoyingsite.com
 0.0.0.0 superlogout.github.io
 
@@ -962,14 +960,55 @@
 0.0.0.0 www.myfreecams.com
 0.0.0.0 icloud.com-locations.in
 0.0.0.0 cradver.livejasmin.com
-
+0.0.0.0 freeadult.games
+0.0.0.0 goooooooooogle.com
+0.0.0.0 rdi.eu.criteo.com
+0.0.0.0 ads.samsungads.com
+0.0.0.0 enabler.datalake.mediaset.it
+0.0.0.0 hbbtv.mediaset.net
+0.0.0.0 amazonco.uk # misspelling
+0.0.0.0 www.myishop.co.uk
+0.0.0.0 www2.myishop.co.uk
+0.0.0.0 ads30.adcolony.com
 
 # See Issue #844 – Windows telemetry servers – https://github.com/StevenBlack/hosts/issues/844
-alpha.telemetry.microsft.com
-eu.vortex-win.data.microsft.com
-oca.telemetry.microsft.com
-us.vortex-win.data.microsft.com
-v10-win.vortex.data.microsft.com.akadns.net
-v10.vortex-win.data.microsft.com
+0.0.0.0 alpha.telemetry.microsft.com
+0.0.0.0 eu.vortex-win.data.microsft.com
+0.0.0.0 oca.telemetry.microsft.com
+0.0.0.0 us.vortex-win.data.microsft.com
+0.0.0.0 v10-win.vortex.data.microsft.com.akadns.net
+0.0.0.0 v10.vortex-win.data.microsft.com
+
+# Grabify IP Logger
+
+0.0.0.0 grabify.link
+0.0.0.0 bmwforum.co
+0.0.0.0 leancoding.co
+0.0.0.0 spottyfly.com
+0.0.0.0 stopify.co
+0.0.0.0 xn--yotu-1ra.be
+0.0.0.0 xn--discrd-zxa.com
+0.0.0.0 xn--srahah-bua.eu
+0.0.0.0 xn--minecrft-5za.com
+0.0.0.0 freegiftcards.co
+0.0.0.0 xn--disordapp-s3a.com
+0.0.0.0 xn--srahah-bua.pl
+0.0.0.0 xda-developers.us
+0.0.0.0 quickmessage.us
+0.0.0.0 fortnight.space
+0.0.0.0 fortnitechat.site
+0.0.0.0 youshouldclick.us
+0.0.0.0 joinmy.site
+0.0.0.0 watches-my.stream
+
+# IP Logger
+
+0.0.0.0 iplogger.org
+0.0.0.0 2no.co
+0.0.0.0 iplogger.com
+0.0.0.0 iplogger.ru
+0.0.0.0 yip.su
+
+0.0.0.0 parentelement.tk
 
 #=====================================
